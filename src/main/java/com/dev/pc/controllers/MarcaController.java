@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -19,8 +20,11 @@ public class MarcaController {
     private MarcaService service;
 
     @GetMapping("/marcas")
-    public List<Marca> list() throws Exception {
-        return this.service.listar();
+    public ResponseEntity<HashMap<String, List<Marca>>> list() throws Exception {
+        List<Marca> marcas = this.service.listar();
+        HashMap<String, List<Marca>> resp = new HashMap<>();
+        resp.put("marcas", marcas);
+        return new ResponseEntity<HashMap<String, List<Marca>>>(resp, HttpStatus.OK);
     }
 
     @GetMapping("/marcas/{id}")

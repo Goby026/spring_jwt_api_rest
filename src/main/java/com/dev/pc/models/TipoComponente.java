@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Marca {
+public class TipoComponente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +26,10 @@ public class Marca {
 
     private String descripcion;
 
-    private String cod_marca;
+    private String cod_componente;
 
     @JsonIgnore
-    @OneToMany(mappedBy="marca", cascade = {
+    @OneToMany(mappedBy="tipoComponente", cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.DETACH,

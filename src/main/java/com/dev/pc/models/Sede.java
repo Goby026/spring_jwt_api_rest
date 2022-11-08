@@ -17,25 +17,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Marca {
+public class Sede {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
-
-    private String descripcion;
-
-    private String cod_marca;
+    private String direccion;
+    private String region;
+    private String departamento;
+    private String provincia;
+    private String distrito;
 
     @JsonIgnore
-    @OneToMany(mappedBy="marca", cascade = {
+    @OneToMany(mappedBy = "sede", cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.DETACH,
             CascadeType.REFRESH
-    } )
-    private List<Componente> componentes;
+    })
+    private List<Ip> ips;
 
     @CreationTimestamp
     private Date created_at;

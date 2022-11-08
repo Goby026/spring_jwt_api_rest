@@ -1,6 +1,5 @@
 package com.dev.pc.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,32 +9,32 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Marca {
+public class UsuarioEquipo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre;
 
-    private String descripcion;
+    private String dni;
 
-    private String cod_marca;
+    private String dependencia;
 
-    @JsonIgnore
-    @OneToMany(mappedBy="marca", cascade = {
+    @ManyToOne( cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.DETACH,
             CascadeType.REFRESH
-    } )
-    private List<Componente> componentes;
+    })
+    @JoinColumn(name = "id_equipo")
+    private Equipo equipo;
 
     @CreationTimestamp
     private Date created_at;
