@@ -2,6 +2,8 @@ package com.dev.pc.controllers;
 
 import com.dev.pc.models.Usuario;
 import com.dev.pc.services.UsuarioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,10 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class UsuarioController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     @Autowired
     private UsuarioService service;
@@ -41,6 +45,19 @@ public class UsuarioController {
     public ResponseEntity<Usuario> get(@PathVariable(value = "username") String u) throws Exception  {
         try {
             Usuario usuario = service.obtenerUsername(u);
+
+            return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
+
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/usuario/{username}")
+    public ResponseEntity<Usuario> getUser(@PathVariable(value = "username") String u) throws Exception  {
+        try {
+            Usuario usuario = service.obtenerUsername(u);
+            usuario.setPassword("");
 
             return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
 

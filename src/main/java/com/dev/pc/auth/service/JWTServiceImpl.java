@@ -7,6 +7,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,10 +33,11 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public String create(Authentication auth) throws JsonProcessingException {
-        //        en esta implementacion se debe crear el token que se devuelve al cliente
+
+        // en esta implementacion se debe crear el token que se devuelve al cliente
         String username = ((User) auth.getPrincipal()).getUsername();
 
-//        obteniendo los roles
+        // obteniendo los roles
         Collection<? extends GrantedAuthority> roles = auth.getAuthorities();
 
         Claims claims = Jwts.claims();

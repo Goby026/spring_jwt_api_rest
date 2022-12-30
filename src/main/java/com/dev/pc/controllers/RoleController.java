@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class RoleController {
 
     @Autowired

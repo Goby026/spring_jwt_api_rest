@@ -37,7 +37,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = obtainUsername(request);
-        logger.warn("User Request --> "+username);
 //        username = (username != null) ? username.trim() : "";
         String password = obtainPassword(request);
 //        password = (password != null) ? password : "";
@@ -55,8 +54,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 username = us.getUsername();
                 password = us.getPassword();
 
-                logger.info("Username desde request parameter (JSON) "+username);
-                logger.info("Password desde request parameter (JSON) "+password);
+                logger.info("Username desde request (JSON) "+username);
+                logger.info("Password desde request (JSON) "+password);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -70,7 +69,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         return authenticationManager.authenticate(authToken);
     }
 
-//    este metodo se actica una vez que hay exito en la autenticacion
+//    este metodo se activa una vez que hay exito en la autenticacion
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
@@ -83,6 +82,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("token", token);
         body.put("user", (User) authResult.getPrincipal());
         body.put("msg", String.format("Hola %s, iniciaste sesion con exito", ((User) authResult.getPrincipal()).getUsername()));
+        body.put("ok", true);
 
 //        la instancia ObjectMapper nos permite convertir cualquier objeto de java en un JSON
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
@@ -97,6 +97,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         body.put("msg", String.format("Error de autenticación, username o password incorrecto") );
         body.put("error", failed.getMessage() );
+        body.put("ok", false);
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(401);
