@@ -3,6 +3,8 @@ package com.dev.pc.controllers;
 import com.dev.pc.models.Cliente;
 import com.dev.pc.models.Costo;
 import com.dev.pc.services.CostoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import java.util.NoSuchElementException;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api/v1")
 public class CostoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CostoController.class);
 
     @Autowired
     private CostoService service;
@@ -49,9 +53,10 @@ public class CostoController {
     }
 
     @PostMapping("/costos")
-    public ResponseEntity<Costo> add(@RequestBody Costo d) throws Exception {
+    public ResponseEntity<Costo> add(@RequestBody Costo obj) throws Exception {
         try {
-            Costo costo = service.registrar(d);
+            logger.info("OBJETO COSTO---------------------------->" + obj);
+            Costo costo = service.registrar(obj);
             return new ResponseEntity<Costo>(costo, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Costo>(HttpStatus.BAD_REQUEST);

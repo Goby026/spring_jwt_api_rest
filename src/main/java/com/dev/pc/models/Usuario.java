@@ -24,6 +24,7 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idusuario")
     private Long id;
 
     @Column(unique = true, length = 120)
@@ -38,9 +39,9 @@ public class Usuario implements Serializable {
 
     @ManyToMany()
     @JoinTable(name = "usuarios_roles",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"usuario_id", "role_id"} )})
+            joinColumns = @JoinColumn(name = "idusuario"),
+            inverseJoinColumns = @JoinColumn(name = "idrole"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"idusuario", "idrole"} )})
     private List<Role> roles;
 
 /*    @JsonIgnore
@@ -53,9 +54,11 @@ public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }

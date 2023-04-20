@@ -1,0 +1,5 @@
+package com.dev.pc.enums;
+
+public enum Meses {
+    ENERO, FEBRERO, MARZO, ABRIL, MAYO, JUNIO, JULIO, AGOSTO, SETIEMBRE, OCTUBRE, NOVIEMBRE, DICIEMBRE
+}

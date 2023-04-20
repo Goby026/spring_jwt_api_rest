@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,6 +32,37 @@ public class PagosServicioDetaController {
     @GetMapping("/pagos-deta/cliente/{id}")
     public ResponseEntity<HashMap<String, List<PagosServiciosDeta>>> list(@PathVariable(value = "id") Long id) throws Exception {
         List<PagosServiciosDeta> pagos = this.service.listar(id);
+        HashMap<String, List<PagosServiciosDeta>> resp = new HashMap<>();
+        resp.put("pagosdeta", pagos);
+        return new ResponseEntity<HashMap<String, List<PagosServiciosDeta>>>(resp, HttpStatus.OK);
+    }
+
+    @GetMapping("/pagos-deta/anio/{idcliente}/{anio}")
+    public ResponseEntity<HashMap<String, List<PagosServiciosDeta>>> list(@PathVariable(value = "idcliente") Long idcliente,
+                                                                          @PathVariable(value = "anio") int anio) throws Exception {
+        List<PagosServiciosDeta> pagos = this.service.listarPorClienteAnio(idcliente, anio);
+        HashMap<String, List<PagosServiciosDeta>> resp = new HashMap<>();
+        resp.put("pagosdeta", pagos);
+        return new ResponseEntity<HashMap<String, List<PagosServiciosDeta>>>(resp, HttpStatus.OK);
+    }
+
+//    controlador para obtener detalles de pago segun rango de fechas
+    @GetMapping("/pagos-deta/fechas/{desde}/{hasta}")
+    public ResponseEntity<HashMap<String, List<PagosServiciosDeta>>> listarFechas(@PathVariable(value = "desde") String desde,
+                                                                          @PathVariable(value = "hasta") String hasta) throws Exception {
+
+        Date inicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+        Date fin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+
+        List<PagosServiciosDeta> pagos = this.service.listarPorFechas(inicio, fin);
+        HashMap<String, List<PagosServiciosDeta>> resp = new HashMap<>();
+        resp.put("pagosdeta", pagos);
+        return new ResponseEntity<HashMap<String, List<PagosServiciosDeta>>>(resp, HttpStatus.OK);
+    }
+
+    @GetMapping("/pagos-deta/pago/{idpago}")
+    public ResponseEntity<HashMap<String, List<PagosServiciosDeta>>> listByPago(@PathVariable(value = "idpago") Long idpago) throws Exception {
+        List<PagosServiciosDeta> pagos = this.service.listarPorPago(idpago);
         HashMap<String, List<PagosServiciosDeta>> resp = new HashMap<>();
         resp.put("pagosdeta", pagos);
         return new ResponseEntity<HashMap<String, List<PagosServiciosDeta>>>(resp, HttpStatus.OK);

@@ -1,5 +1,7 @@
 package com.dev.pc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,32 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @SpringBootApplication
 public class PcApplication implements CommandLineRunner {
 
-//	@Autowired
-//	private UsuarioRepository userRepository;
-//
-//	@Autowired
-//	private PasswordEncoder encoder;
-//
-//	@PostConstruct
-//	public void initUsers() {
-//
-//		List<Role> roles = new ArrayList<>();
-//
-//		roles.add(new Role(null,"ADMIN"));
-//
-//		List<Role> roles2 = new ArrayList<>();
-//
-//		roles2.add(new Role(null,"USER"));
-//
-//		List<Usuario> usuarios = Stream.of(
-//				new Usuario(null, "gobydev", encoder.encode("password"), true, roles),
-//				new Usuario(null, "marcel", encoder.encode("pwd1"), true, roles2),
-//				new Usuario(null, "gabriela", encoder.encode("pwd2"), true, roles2),
-//				new Usuario(null, "kratos", encoder.encode("pwd3"), true, roles2)
-//		).collect(Collectors.toList());
-//
-//		userRepository.saveAll(usuarios);
-//	}
+	private static final Logger logger = LoggerFactory.getLogger(PcApplication.class);
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -52,15 +29,6 @@ public class PcApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PcApplication.class, args);
+		logger.info("SERVER ONLINE");
 	}
-//
-//	public WebMvcConfigurer corsConfigurer() {
-//		return new WebMvcConfigurer() {
-//			@Override
-//			public void addCorsMappings(CorsRegistry registry) {
-//				registry.addMapping("/api/**").allowedOrigins("http://localhost:4200/");
-//			}
-//		};
-//	}
-
 }

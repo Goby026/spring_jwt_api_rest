@@ -27,6 +27,14 @@ public class TributoDetalleController {
         return new ResponseEntity<HashMap<String, List<Tributodetalle>>>(resp, HttpStatus.OK);
     }
 
+    @GetMapping("/tributo-detalles/req/{codrequi}")
+    public ResponseEntity<HashMap<String, List<Tributodetalle>>> listByReq(@PathVariable(value = "codrequi") Long codrequi) throws Exception {
+        List<Tributodetalle> detalles = this.service.listarPorRequisito(codrequi);
+        HashMap<String, List<Tributodetalle>> resp = new HashMap<>();
+        resp.put("detalles", detalles);
+        return new ResponseEntity<HashMap<String, List<Tributodetalle>>>(resp, HttpStatus.OK);
+    }
+
     @GetMapping("/tributo-detalles/{id}")
     public ResponseEntity<Tributodetalle> get(@PathVariable(value = "id") Long id) throws Exception {
         try {

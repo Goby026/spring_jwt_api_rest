@@ -46,6 +46,22 @@ public class VoucherController {
         return new ResponseEntity<HashMap<String, List<Voucher>>>(resp, HttpStatus.OK);
     }
 
+    @GetMapping("/vouchers/search/{nombres}")
+    public ResponseEntity<HashMap<String, List<Voucher>>> list(@PathVariable(value = "nombres") String nombres) throws Exception {
+
+        try {
+
+            List<Voucher> vouchers = this.service.listar(nombres);
+            HashMap<String, List<Voucher>> resp = new HashMap<>();
+            resp.put("vouchers", vouchers);
+
+            return new ResponseEntity<HashMap<String, List<Voucher>>>(resp, HttpStatus.OK);
+
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<HashMap<String, List<Voucher>>>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/vouchers/{id}")
     public ResponseEntity<Voucher> get(@PathVariable(value = "id") Long id) throws Exception {
         try {
@@ -80,7 +96,10 @@ public class VoucherController {
         Voucher voucher = mapper.readValue(v, Voucher.class);
 
         VoucherDetalle[] detalles = mapper.readValue(d, VoucherDetalle[].class);
-        List<VoucherDetalle> details = Arrays.stream(detalles).toList();
+        List<VoucherDetalle> details = new ArrayList<>();
+        for (VoucherDetalle detalle : detalles) {
+            details.add(detalle);
+        }
 
         Voucher voucherSaved = service.registrar(voucher);
 
@@ -101,14 +120,13 @@ public class VoucherController {
     public ResponseEntity<?> upload(@RequestParam("archivo") MultipartFile archivo,
                                     @RequestParam("id") Long id) throws Exception {
 
-        logger.info("ACCEDIO AL CONTROLADOR--------------------------------->");
         Map<String, Object> response = new HashMap<String, Object>();
         Voucher voucher = service.obtener(id);
 
         if(!archivo.isEmpty()) {
             String nombreArchivo = UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ", "");
-            Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
-//            Path rutaArchivo = Paths.get("/opt/uploads").resolve(nombreArchivo).toAbsolutePath();
+//            Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
+            Path rutaArchivo = Paths.get("/opt/uploads").resolve(nombreArchivo).toAbsolutePath();
             logger.info(rutaArchivo.toString());
             try {
                 Files.copy(archivo.getInputStream(), rutaArchivo);
@@ -121,7 +139,8 @@ public class VoucherController {
             String nomImagenAnterior = voucher.getImagen();
 
             if (nomImagenAnterior != null && nomImagenAnterior.length() > 0){
-                Path rutaImagenAnterior = Paths.get("uploads").resolve(nomImagenAnterior).toAbsolutePath();
+//                Path rutaImagenAnterior = Paths.get("uploads").resolve(nomImagenAnterior).toAbsolutePath();
+                Path rutaImagenAnterior = Paths.get("/opt/uploads").resolve(nomImagenAnterior).toAbsolutePath();
                 File archivoImagenAnterior = rutaImagenAnterior.toFile();
                 if (archivoImagenAnterior.exists() && archivoImagenAnterior.canRead()){
                     archivoImagenAnterior.delete();
@@ -146,8 +165,8 @@ public class VoucherController {
     @GetMapping("/uploads/img/{nombreImagen:.+}")
     public ResponseEntity<Resource> verImagen(@PathVariable String nombreImagen){
 
-        Path rutaArchivo = Paths.get("uploads").resolve(nombreImagen).toAbsolutePath();
-//        Path rutaArchivo = Paths.get("/opt/uploads").resolve(nombreImagen).toAbsolutePath();
+//        Path rutaArchivo = Paths.get("uploads").resolve(nombreImagen).toAbsolutePath();
+        Path rutaArchivo = Paths.get("/opt/uploads").resolve(nombreImagen).toAbsolutePath();
         Resource recurso= null;
         logger.info(rutaArchivo.toString());
 
@@ -172,8 +191,8 @@ public class VoucherController {
     @PutMapping("/vouchers/{id}")
     public ResponseEntity<Voucher> update(@RequestBody Voucher c, @PathVariable Long id) throws Exception {
         try {
-            service.registrar(c);
-            return new ResponseEntity<Voucher>(c, HttpStatus.OK);
+            Voucher voucher = service.registrar(c);
+            return new ResponseEntity<Voucher>(voucher, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Voucher>(HttpStatus.NOT_FOUND);
         }
@@ -186,7 +205,8 @@ public class VoucherController {
             String nomImagenAnterior = voucher.getImagen();
 
             if (nomImagenAnterior != null && nomImagenAnterior.length() > 0){
-                Path rutaImagenAnterior = Paths.get("uploads").resolve(nomImagenAnterior).toAbsolutePath();
+//                Path rutaImagenAnterior = Paths.get("uploads").resolve(nomImagenAnterior).toAbsolutePath();
+                Path rutaImagenAnterior = Paths.get("/opt/uploads").resolve(nomImagenAnterior).toAbsolutePath();
                 File archivoImagenAnterior = rutaImagenAnterior.toFile();
                 if (archivoImagenAnterior.exists() && archivoImagenAnterior.canRead()){
                     archivoImagenAnterior.delete();

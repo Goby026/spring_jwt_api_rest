@@ -36,4 +36,9 @@ public class TributoDetalleService implements DAOService<Tributodetalle> {
     public List<Tributodetalle> listar() throws Exception {
         return repository.findAll();
     }
+
+//    listar por requerimiento
+    public List<Tributodetalle> listarPorRequisito(Long codrequi) throws Exception {
+        return repository.findByRequisitoCodrequi(codrequi);
+    }
 }

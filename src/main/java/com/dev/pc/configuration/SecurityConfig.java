@@ -44,9 +44,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
-                    .antMatchers("/", "/api/login").permitAll()
+                    .antMatchers("/", "/api/login", "/api/v1/usuarios", "/api/v1/roles").permitAll()
+//                    .antMatchers(HttpMethod.GET,"/api/v1/**").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/v1/clientes/**").permitAll()
+                    .antMatchers(HttpMethod.GET,"/api/v1/uploads/img/**").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/v1/deudas/**").permitAll()
+                    .antMatchers(HttpMethod.PUT,"/api/v1/deudas/service").permitAll()
                     .antMatchers(HttpMethod.GET,"/api/v1/pagos-servicio/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/v1/vouchers/save").permitAll()
                     .antMatchers(HttpMethod.POST,"/api/v1/vouchers/upload").permitAll()
@@ -79,6 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200/"));
+//        configuration.setAllowedOrigins(Arrays.asList("http://154.12.238.230/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));

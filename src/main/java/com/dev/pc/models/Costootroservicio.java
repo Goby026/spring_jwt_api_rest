@@ -27,8 +27,12 @@ public class Costootroservicio implements Serializable {
     @Column(name = "idcostootro", nullable = false)
     private Long id;
 
-    @ManyToOne()
-    @JoinColumn(name = "idcosto")
+//    @ManyToOne()
+//    @JoinColumn(name = "idcosto")
+//    private Costo costo;
+
+    @OneToOne()
+    @JoinColumn(name = "idcosto", referencedColumnName = "codcosto")
     private Costo costo;
 
 //    @Column(name = "idtarifario", nullable = false)
@@ -39,10 +43,12 @@ public class Costootroservicio implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
 }

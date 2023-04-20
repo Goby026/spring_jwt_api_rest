@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -24,6 +25,16 @@ public class TupaController {
         HashMap<String, List<Tupa>> resp = new HashMap<>();
         resp.put("tupas", tupas);
         return new ResponseEntity<HashMap<String, List<Tupa>>>(resp, HttpStatus.OK);
+    }
+
+    @GetMapping("/tupas/{id}")
+    public ResponseEntity<Tupa> get(@PathVariable(value = "id") Long id) throws Exception {
+        try {
+            Tupa tupa = service.obtener(id);
+            return new ResponseEntity<Tupa>(tupa, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<Tupa>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

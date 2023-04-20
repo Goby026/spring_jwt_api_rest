@@ -1,7 +1,12 @@
 package com.dev.pc.controllers;
 
+import com.dev.pc.models.Costo;
 import com.dev.pc.models.Costootroservicio;
+import com.dev.pc.models.Tarifario;
+import com.dev.pc.services.CostoService;
 import com.dev.pc.services.CostootroservicioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +20,14 @@ import java.util.NoSuchElementException;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api/v1")
 public class CostootroservicioController {
+
+    public static final Logger logger = LoggerFactory.getLogger(CostootroservicioController.class);
     
     @Autowired
     private CostootroservicioService service;
+
+    @Autowired
+    private CostoService costoService;
 
     @GetMapping("/costo-otros")
     public ResponseEntity<HashMap<String, List<Costootroservicio>>> list() throws Exception {
@@ -51,6 +61,11 @@ public class CostootroservicioController {
 
     @PostMapping("/costo-otros")
     public ResponseEntity<Costootroservicio> add(@RequestBody Costootroservicio c) throws Exception {
+
+        /*Costo costo = costoService.obtener(c.getCosto().getCodcosto());
+        Tarifario tarifario = */
+
+
         try {
             Costootroservicio costootro = service.registrar(c);
             return new ResponseEntity<Costootroservicio>(costootro, HttpStatus.CREATED);
@@ -63,6 +78,9 @@ public class CostootroservicioController {
     @PutMapping("/costo-otros/{id}")
     public ResponseEntity<Costootroservicio> update(@RequestBody Costootroservicio c, @PathVariable Long id) throws Exception {
         try {
+
+            Costootroservicio co = service.obtener(id);
+
             service.registrar(c);
             return new ResponseEntity<Costootroservicio>(c, HttpStatus.OK);
         } catch (NoSuchElementException e) {

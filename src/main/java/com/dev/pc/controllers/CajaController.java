@@ -1,7 +1,9 @@
 package com.dev.pc.controllers;
 
 import com.dev.pc.models.Caja;
+import com.dev.pc.models.PagosServicio;
 import com.dev.pc.services.CajaService;
+import com.dev.pc.services.PagosServicioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class CajaController {
     
     @Autowired
     private CajaService service;
+
+    @Autowired
+    private PagosServicioService pagosService;
 
     @GetMapping("/cajas")
     public ResponseEntity<HashMap<String, List<Caja>>> list() throws Exception {
@@ -67,7 +72,10 @@ public class CajaController {
     @PutMapping("/cajas/{id}")
     public ResponseEntity<Caja> update(@RequestBody Caja caja, @PathVariable Long id) throws Exception {
         try {
-            service.registrar(caja);
+//            obtener pagos por caja
+            List<PagosServicio> pagos = pagosService.listarPorCaja(id);
+            service.persistirMonto(pagos, caja);
+//            service.registrar(caja);
             return new ResponseEntity<Caja>(caja, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Caja>(HttpStatus.NOT_FOUND);
@@ -90,6 +98,12 @@ public class CajaController {
     public ResponseEntity<Caja> getLast() throws Exception {
         try {
             Caja caja = service.obtenerUlimo();
+//            if (!caja.toString().contains("null")){
+//                return new ResponseEntity<Caja>(caja, HttpStatus.OK);
+//            }else{
+//                logger.info("NO HAY NINGUNA CAJA REGISTRADA------------------------------------------------>>>>>>>");
+//                return null;
+//            }
             return new ResponseEntity<Caja>(caja, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Caja>(HttpStatus.NOT_FOUND);

@@ -70,6 +70,7 @@ public class UsuarioController {
     public ResponseEntity<Usuario> add(@RequestBody Usuario usuario) throws Exception {
         try {
 
+            usuario.setEnabled(true);
             Usuario user = service.registrar(usuario);
 
             return new ResponseEntity<Usuario>(user, HttpStatus.CREATED);

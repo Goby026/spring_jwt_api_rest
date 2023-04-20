@@ -1,6 +1,5 @@
 package com.dev.pc.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,7 +31,10 @@ public class Caja implements Serializable {
     private Double efectivoape;
     private Date fapertura;
     private Date fcierre;
-    private Double total;
+    private Double total; //monto de sistema
+    private Double totalefectivo; //monto contabilizado
+    private Double balance; //saldo positivo o negativo
+    private String obs;
     private int esta;
 
     @ManyToOne()
@@ -45,9 +47,11 @@ public class Caja implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }

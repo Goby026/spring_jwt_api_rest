@@ -33,6 +33,13 @@ public class ClienteService implements DAOService<Cliente> {
         return repository.findAll();
     }
 
+    public List<Cliente> listar(String valor) throws Exception {
+        if (valor != null){
+            return repository.findAll(valor);
+        }
+        return repository.findAll();
+    }
+
     public List<Cliente> buscarClientePorNombre(String nombre) throws Exception {
         return repository.findByNombresContaining(nombre);
     }
@@ -44,4 +51,16 @@ public class ClienteService implements DAOService<Cliente> {
     public List<Cliente> buscarClientePorApellido(String ape) throws Exception {
         return repository.findByApepaternoContaining(ape);
     }
+
+    public List<Cliente> buscarClientesPorZona(Long idzona) throws Exception{
+        return repository.findByZonaIdtbzonas(idzona);
+    }
+
+//    public List<Cliente> buscarTodo(String valor) throws Exception{
+//
+//        if (valor != null){
+//            return repository.searchAll(valor);
+//        }
+//        return repository.findAll();
+//    }
 }

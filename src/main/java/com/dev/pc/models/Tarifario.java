@@ -28,7 +28,7 @@ public class Tarifario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idtarifario;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "idservicio")
     private Servicio servicio;
 
@@ -37,14 +37,16 @@ public class Tarifario implements Serializable {
     private int esta;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tarifario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tarifario", fetch = FetchType.LAZY)
     private List<Costootroservicio> costootroservicios;
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }

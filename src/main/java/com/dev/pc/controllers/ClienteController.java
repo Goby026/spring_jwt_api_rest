@@ -2,16 +2,13 @@ package com.dev.pc.controllers;
 
 import com.dev.pc.models.Cliente;
 import com.dev.pc.services.ClienteService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,7 +20,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/v1")
 public class ClienteController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClienteController.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(ClienteController.class);
 
     @Autowired
     private ClienteService service;
@@ -40,6 +37,14 @@ public class ClienteController {
     @GetMapping("/clientes/listar/{nombre}")
     public ResponseEntity<HashMap<String, List<Cliente>>> listar(@PathVariable String nombre) throws Exception {
         List<Cliente> clientes = this.service.buscarClientePorNombre(nombre);
+        HashMap<String, List<Cliente>> resp = new HashMap<>();
+        resp.put("clientes", clientes);
+        return new ResponseEntity<HashMap<String, List<Cliente>>>(resp, HttpStatus.OK);
+    }
+
+    @GetMapping("/clientes/zona/{idzona}")
+    public ResponseEntity<HashMap<String, List<Cliente>>> listarPorZona(@PathVariable Long idzona) throws Exception {
+        List<Cliente> clientes = this.service.buscarClientesPorZona(idzona);
         HashMap<String, List<Cliente>> resp = new HashMap<>();
         resp.put("clientes", clientes);
         return new ResponseEntity<HashMap<String, List<Cliente>>>(resp, HttpStatus.OK);
@@ -100,8 +105,8 @@ public class ClienteController {
     @PutMapping("/clientes/{id}")
     public ResponseEntity<Cliente> update(@RequestBody Cliente c, @PathVariable Long id) throws Exception {
         try {
-            service.registrar(c);
-            return new ResponseEntity<Cliente>(c, HttpStatus.OK);
+            Cliente cliente = service.registrar(c);
+            return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Cliente>(HttpStatus.NOT_FOUND);
         }
@@ -125,5 +130,15 @@ public class ClienteController {
         resp.put("clientes", clientes);
         return new ResponseEntity<HashMap<String, List<Cliente>>>(resp, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/clientes/search/{valor}")
+    public ResponseEntity<HashMap<String, List<Cliente>>> buscarTodo(@PathVariable(value = "valor") String valor) throws Exception {
+
+        List<Cliente> clientes = this.service.listar(valor);
+
+        HashMap<String, List<Cliente>> resp = new HashMap<>();
+        resp.put("clientes", clientes);
+        return new ResponseEntity<HashMap<String, List<Cliente>>>(resp, HttpStatus.OK);
     }
 }

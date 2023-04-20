@@ -32,4 +32,8 @@ public class VoucherService implements DAOService<Voucher> {
     public List<Voucher> listar() throws Exception {
         return repository.findAll();
     }
+
+    public List<Voucher> listar(String nombres) throws Exception {
+        return repository.findByClienteNombresContaining(nombres);
+    }
 }

@@ -36,18 +36,16 @@ public class Tupa implements Serializable {
     private int esta;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tupa",
-            cascade = {CascadeType.PERSIST,
-                    CascadeType.MERGE,
-                    CascadeType.DETACH,
-                    CascadeType.REFRESH})
+    @OneToMany(mappedBy = "tupa",fetch = FetchType.LAZY)
     private List<Requisitos> requisitos;
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }

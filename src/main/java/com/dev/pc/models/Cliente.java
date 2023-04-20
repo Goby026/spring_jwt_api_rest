@@ -44,13 +44,13 @@ public class Cliente implements Serializable {
     private String exo_a;
     private String exo_f;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date fec_nac;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date fec_ing;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String baja;
 
     @Column(name = "fec_baja", nullable = true)
@@ -73,8 +73,8 @@ public class Cliente implements Serializable {
     private List<Deuda> deudas;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
-    private List<Costo> costos;
+    @OneToOne(mappedBy = "cliente", fetch = FetchType.LAZY)
+    private Costo costo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
@@ -95,11 +95,16 @@ public class Cliente implements Serializable {
 
     private int estado;
 
+    @Column(name = "cod_cli", nullable = true)
+    private String codCli;
+
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }

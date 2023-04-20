@@ -1,16 +1,18 @@
 package com.dev.pc.controllers;
 
 import com.dev.pc.models.PagosServicio;
+import com.dev.pc.models.PagosServiciosDeta;
 import com.dev.pc.models.Tributo;
+import com.dev.pc.services.PagosServicioService;
+import com.dev.pc.services.PagosServiciosDetaService;
 import com.dev.pc.services.TributoService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -19,6 +21,12 @@ public class TributoController {
     
     @Autowired
     private TributoService service;
+
+    @Autowired
+    private PagosServicioService pagoService;
+
+    @Autowired
+    private PagosServiciosDetaService pagoDetalleService;
 
     @GetMapping("/tributos")
     public ResponseEntity<HashMap<String, List<Tributo>>> list() throws Exception {
@@ -52,13 +60,38 @@ public class TributoController {
             pagosServicio.setMontodescuento(0.0);
             pagosServicio.setMontopagado(t.getSubtotal());
             pagosServicio.setFecha(t.getCreated_at());
-            pagosServicio.setUsuario(t.getUsuario());*/
+            pagosServicio.setUsuario(t.getUser());*/
 
             return new ResponseEntity<Tributo>(tributo, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Tributo>(HttpStatus.BAD_REQUEST);
         }
     }
+
+//    método para registrar pago y detalle de pago de un tributo
+/*    @PostMapping("/tributos/save")
+    public ResponseEntity<?> add(@RequestParam("pagoservicio") String p,
+                                 @RequestParam("detalles") String d) throws Exception {
+        Map<String, Object> response = new HashMap<String, Object>();
+
+        ObjectMapper mapper = new ObjectMapper();
+        PagosServicio pago = mapper.readValue(p, PagosServicio.class);
+
+        PagosServiciosDeta[] detalles = mapper.readValue(d, PagosServiciosDeta[].class);
+        List<PagosServiciosDeta> details = Arrays.stream(detalles).toList();
+
+        PagosServicio pagoSaved = pagoService.registrar(pago);
+
+        details.stream().forEach( (det)->{
+            det.setPagosServicio(pagoSaved);
+        });
+
+        pagoDetalleService.registrar(details);
+        response.put("pago", pagoSaved);
+        response.put("detalles", details);
+
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+    }*/
 
     //se debe enviar el objeto completo, incluyendo el id, de lo contrario creará un registro nuevo
     @PutMapping("/tributos/{id}")

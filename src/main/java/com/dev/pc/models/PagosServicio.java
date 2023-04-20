@@ -1,7 +1,6 @@
 package com.dev.pc.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -51,7 +50,7 @@ public class PagosServicio implements Serializable {
     private Date fecha;
 
     @ManyToOne()
-    @JoinColumn(name = "idusuario", nullable = false, columnDefinition = "INT DEFAULT 1")
+    @JoinColumn(name = "idusuario", nullable = false)
     private Usuario usuario;
 
     @Column(name = "esta", nullable = false)
@@ -82,11 +81,12 @@ public class PagosServicio implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
-
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
 }

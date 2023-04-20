@@ -1,6 +1,7 @@
 package com.dev.pc.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,8 +37,9 @@ public class Costo implements Serializable {
     @JoinColumn(name = "codzona")
     private Zona zona;
 
-    @ManyToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codcliente")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cliente cliente;
 
     private String mza;
@@ -57,9 +59,9 @@ public class Costo implements Serializable {
     private int nrointegrante;
     private String referencia_dom;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "costo", fetch = FetchType.LAZY)
-    private List<Costootroservicio> costootroservicios;
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "costo", fetch = FetchType.LAZY)
+//    private List<Costootroservicio> costootroservicios;
 
     @JsonIgnore
     @OneToMany(mappedBy = "costo", fetch = FetchType.LAZY)
@@ -67,11 +69,13 @@ public class Costo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @CreationTimestamp
-    private Date created_at;
+    @CreationTimestamp()
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
 
     @UpdateTimestamp()
-    private Date updated_at;
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }
 
 

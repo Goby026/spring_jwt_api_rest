@@ -1,11 +1,11 @@
 package com.dev.pc.services;
 
-import com.dev.pc.models.PagosServicio;
 import com.dev.pc.models.PagosServiciosDeta;
 import com.dev.pc.repository.PagosServiciosDetaRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,5 +40,18 @@ public class PagosServiciosDetaService implements DAOService<PagosServiciosDeta>
 
     public List<PagosServiciosDeta> listar(Long idCliente) throws Exception {
         return detaRepo.findByClienteIdclientes(idCliente);
+    }
+
+    public List<PagosServiciosDeta> listarPorClienteAnio(Long idcliente, int anio) throws Exception{
+        return detaRepo.findByClienteIdclientesAndIdanno(idcliente, anio);
+    }
+
+    public List<PagosServiciosDeta> listarPorPago(Long idpago) throws Exception {
+        return detaRepo.findByPagosServicioId(idpago);
+    }
+
+//    listar por rango de fechas
+    public List<PagosServiciosDeta> listarPorFechas(Date desde, Date hasta) throws Exception {
+        return detaRepo.findByCreatedAtBetween(desde, hasta);
     }
 }
