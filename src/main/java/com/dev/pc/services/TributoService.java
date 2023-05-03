@@ -36,4 +36,8 @@ public class TributoService implements DAOService<Tributo> {
     public int contar() throws Exception {
         return (int)repository.count();
     }
+
+    public List<Tributo> listarPorZona(int idzona) throws Exception {
+        return repository.findByClienteZonaIdtbzonas(idzona);
+    }
 }

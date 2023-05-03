@@ -5,6 +5,7 @@ import com.dev.pc.repository.TributoDetalleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,8 +38,13 @@ public class TributoDetalleService implements DAOService<Tributodetalle> {
         return repository.findAll();
     }
 
-//    listar por requerimiento
+//  LISTAR POR REQUISITO
     public List<Tributodetalle> listarPorRequisito(Long codrequi) throws Exception {
         return repository.findByRequisitoCodrequi(codrequi);
+    }
+
+//    LISTAR POR REQUISITO Y RANGO DE FECHAS
+    public List<Tributodetalle> listarPorRequisitoDates(Long codrequi, Date desde, Date hasta) throws Exception {
+        return repository.findByRequisitoCodrequiAndCreatedAtBetween(codrequi, desde, hasta);
     }
 }

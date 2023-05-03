@@ -33,6 +33,7 @@ public class Caja implements Serializable {
     private Date fcierre;
     private Double total; //monto de sistema
     private Double totalefectivo; //monto contabilizado
+    private Double totalegresos;
     private Double balance; //saldo positivo o negativo
     private String obs;
     private int esta;

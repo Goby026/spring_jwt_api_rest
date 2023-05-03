@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,6 +32,19 @@ public class TributoDetalleController {
     @GetMapping("/tributo-detalles/req/{codrequi}")
     public ResponseEntity<HashMap<String, List<Tributodetalle>>> listByReq(@PathVariable(value = "codrequi") Long codrequi) throws Exception {
         List<Tributodetalle> detalles = this.service.listarPorRequisito(codrequi);
+        HashMap<String, List<Tributodetalle>> resp = new HashMap<>();
+        resp.put("detalles", detalles);
+        return new ResponseEntity<HashMap<String, List<Tributodetalle>>>(resp, HttpStatus.OK);
+    }
+
+//    API PARA LISTAR PAGOS POR REQUISITO Y RANGO DE FECHA
+    @GetMapping("/tributo-detalles/reporte/{codrequi}/{desde}/{hasta}")
+    public ResponseEntity<HashMap<String, List<Tributodetalle>>> listByReqAndDates(@PathVariable(value = "codrequi") Long codrequi, @PathVariable(value = "desde") String desde,
+                                                                                   @PathVariable(value = "hasta") String hasta) throws Exception {
+        Date inicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+        Date fin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+
+        List<Tributodetalle> detalles = this.service.listarPorRequisitoDates(codrequi, inicio, fin);
         HashMap<String, List<Tributodetalle>> resp = new HashMap<>();
         resp.put("detalles", detalles);
         return new ResponseEntity<HashMap<String, List<Tributodetalle>>>(resp, HttpStatus.OK);
