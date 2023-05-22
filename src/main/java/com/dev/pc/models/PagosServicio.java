@@ -59,6 +59,9 @@ public class PagosServicio implements Serializable {
     @Column(name = "correlativo")
     private Integer correlativo;
 
+    @Column(name = "observacion", nullable = true)
+    private String observacion = "";
+
     @JsonIgnore
     @OneToMany(mappedBy = "pagosServicio", fetch = FetchType.LAZY)
     private List<VoucherDetalle> voucherDetalles;
