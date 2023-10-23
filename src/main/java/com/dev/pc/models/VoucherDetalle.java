@@ -52,6 +52,10 @@ public class VoucherDetalle implements Serializable {
     @JoinColumn(name = "idpagos", nullable = true)
     private PagosServicio pagosServicio;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idtbdeudas", nullable = true)
+    private Deuda deuda;
+
     private static final long serialVersionUID = 1L;
 
     @CreationTimestamp()

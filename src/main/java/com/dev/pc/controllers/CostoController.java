@@ -67,8 +67,8 @@ public class CostoController {
     @PutMapping("/costos/{id}")
     public ResponseEntity<Costo> update(@RequestBody Costo d, @PathVariable Long id) throws Exception {
         try {
-            service.registrar(d);
-            return new ResponseEntity<Costo>(d, HttpStatus.OK);
+            Costo costo = service.registrar(d);
+            return new ResponseEntity<Costo>(costo, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Costo>(HttpStatus.NOT_FOUND);
         }

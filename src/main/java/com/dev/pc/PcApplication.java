@@ -18,17 +18,17 @@ public class PcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		String password = "123456";
-
-		for (int i = 0; i < 4; i++){
-			String passwordBcrypt = passwordEncoder.encode(password);
-			System.out.println(passwordBcrypt);
-		}
+//		String password = "123456";
+//
+//		for (int i = 0; i < 4; i++){
+//			String passwordBcrypt = passwordEncoder.encode(password);
+//			System.out.println(passwordBcrypt);
+//		}
 
 	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(PcApplication.class, args);
-		logger.info("SERVER ONLINE");
+		logger.info("********************* SERVER ONLINE *********************");
 	}
 }

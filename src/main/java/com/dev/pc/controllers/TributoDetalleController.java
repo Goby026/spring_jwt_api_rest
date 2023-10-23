@@ -2,6 +2,8 @@ package com.dev.pc.controllers;
 
 import com.dev.pc.models.Tributodetalle;
 import com.dev.pc.services.TributoDetalleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import java.util.NoSuchElementException;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api/v1")
 public class TributoDetalleController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TributoDetalleController.class);
     
     @Autowired
     private TributoDetalleService service;
@@ -43,6 +47,10 @@ public class TributoDetalleController {
                                                                                    @PathVariable(value = "hasta") String hasta) throws Exception {
         Date inicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
         Date fin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+
+        logger.info("CodRequi---->" + codrequi);
+        logger.info("desde---->" + desde);
+        logger.info("hasta---->" + hasta);
 
         List<Tributodetalle> detalles = this.service.listarPorRequisitoDates(codrequi, inicio, fin);
         HashMap<String, List<Tributodetalle>> resp = new HashMap<>();

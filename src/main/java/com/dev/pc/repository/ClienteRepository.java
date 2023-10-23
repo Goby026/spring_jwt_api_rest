@@ -11,6 +11,7 @@ import java.util.List;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     List<Cliente> findByNombresContaining(String nombre);
     List<Cliente> findByDniContaining(String dni);
+    Cliente findByDni(String dni);
     List<Cliente> findByApepaternoContaining(String ape);
     List<Cliente> findByZonaIdtbzonas(Long idzona);
 

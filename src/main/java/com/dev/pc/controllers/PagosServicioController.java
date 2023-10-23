@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -49,6 +50,19 @@ public class PagosServicioController {
         resp.put("pagosservicios", pagosservicios);
         return new ResponseEntity<HashMap<String, List<PagosServicio>>>(resp, HttpStatus.OK);
     }
+
+//  LISTAR POR TRIBUTO
+@GetMapping("/pagos-servicio/tributo/{idtributo}/{desde}/{hasta}")
+public ResponseEntity<HashMap<String, List<PagosServicio>>> listByReqAndDates(@PathVariable(value = "idtributo") Long idtributo, @PathVariable(value = "desde") String desde,
+                                                                               @PathVariable(value = "hasta") String hasta) throws Exception {
+    Date inicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+    Date fin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+
+    List<PagosServicio> pagos = this.service.listarPorTributo(idtributo, inicio, fin);
+    HashMap<String, List<PagosServicio>> resp = new HashMap<>();
+    resp.put("pagos", pagos);
+    return new ResponseEntity<HashMap<String, List<PagosServicio>>>(resp, HttpStatus.OK);
+}
 
 //    OBTENER CORRELATIVO
     @GetMapping("/pagos-servicio/count")
@@ -182,5 +196,13 @@ public class PagosServicioController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity<PagosServicio>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/pagos-servicio/year-month/{param}")
+    public ResponseEntity<HashMap<String, List<PagosServicio>>> listByYearMonth(@PathVariable(value = "param") String param) throws Exception {
+        List<PagosServicio> pagosservicios = this.service.listarPorYearMonth(param);
+        HashMap<String, List<PagosServicio>> resp = new HashMap<>();
+        resp.put("pagosservicios", pagosservicios);
+        return new ResponseEntity<HashMap<String, List<PagosServicio>>>(resp, HttpStatus.OK);
     }
 }

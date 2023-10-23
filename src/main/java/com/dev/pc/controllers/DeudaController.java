@@ -36,7 +36,7 @@ public class DeudaController {
         return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
     }
 
-//    buscar deudas por id de cliente
+    /* =========BUSCAR DEUDAS POR ID DE CLIENTE========= */
     @GetMapping("/deudas/buscar/{id}")
     public ResponseEntity<HashMap<String, List<Deuda>>> listar(@PathVariable(value = "id") Long id) throws Exception {
         List<Deuda> deudas = this.service.listar(id);
@@ -45,37 +45,37 @@ public class DeudaController {
         return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
     }
 
-    /* BUSCAR DEUDAS DE ZONA POR RANGO DE FECHAS */
+    /* =========BUSCAR DEUDAS DE ZONA POR RANGO DE FECHAS========= */
     @GetMapping("/deudas/buscar-zona/{idzona}/{desde}/{hasta}")
     public ResponseEntity<HashMap<String, List<Deuda>>> listarPorZonaAnnio(@PathVariable(value = "idzona") Long idzona,
                                                                            @PathVariable(value = "desde") String desde,
                                                                            @PathVariable(value = "hasta") String hasta) throws Exception {
 
-        Date dateInicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+        Date dateInicio = new SimpleDateFormat("yyyy-MM-dd").parse(desde);
         Date dateFin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
 
-        List<Deuda> deudas = this.service.listarPorZonaAnnio(idzona,dateInicio, dateFin);
+        List<Deuda> deudas = this.service.listarPorZonaAnnio(idzona, dateInicio, dateFin);
         HashMap<String, List<Deuda>> resp = new HashMap<>();
         resp.put("deudas", deudas);
         return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
     }
 
-    /* BUSCAR DEUDAS DE CLIENTE POR RANGO DE FECHAS */
+    /* =========BUSCAR DEUDAS DE CLIENTE POR RANGO DE FECHAS========= */
     @GetMapping("/deudas/buscar-cliente/{idcliente}/{desde}/{hasta}")
     public ResponseEntity<HashMap<String, List<Deuda>>> listarPorClienteAnnio(@PathVariable(value = "idcliente") Long idcliente,
-                                                                           @PathVariable(value = "desde") String desde,
-                                                                           @PathVariable(value = "hasta") String hasta) throws Exception {
+                                                                              @PathVariable(value = "desde") String desde,
+                                                                              @PathVariable(value = "hasta") String hasta) throws Exception {
 
-        Date dateInicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+        Date dateInicio = new SimpleDateFormat("yyyy-MM-dd").parse(desde);
         Date dateFin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
 
-        List<Deuda> deudas = this.service.listarPorClienteAnnio(idcliente,dateInicio, dateFin);
+        List<Deuda> deudas = this.service.listarPorClienteAnnio(idcliente, dateInicio, dateFin);
         HashMap<String, List<Deuda>> resp = new HashMap<>();
         resp.put("deudas", deudas);
         return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
     }
 
-    /*    DEUDAS POR ZONA */
+    /* =========DEUDAS POR ZONA========= */
     @GetMapping("/deudas/buscar-zona/{idzona}")
     public ResponseEntity<HashMap<String, List<Deuda>>> listarPorZona(@PathVariable(value = "idzona") Long idzona) throws Exception {
 
@@ -95,6 +95,7 @@ public class DeudaController {
         }
     }
 
+    /* =========DEUDAS POR ZONA========= */
     @PostMapping("/deudas")
     public ResponseEntity<Deuda> add(@RequestBody Deuda d) throws Exception {
         try {
@@ -118,16 +119,26 @@ public class DeudaController {
         }
     }
 
+    @PutMapping("/deuda/{id}")
+    public ResponseEntity<Deuda> update(@RequestBody Deuda deuda, @PathVariable Long id) throws Exception {
+        try {
+            service.registrar(deuda);
+            return new ResponseEntity<Deuda>(deuda, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<Deuda>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     //    api rest para actualizar estado de las deudas
     @PreAuthorize("permitAll()")
     @PutMapping("/deudas/service")
-    public ResponseEntity<HashMap<String, List<Deuda>>> update(@RequestBody List<Deuda> deudas) throws Exception {
+    public ResponseEntity<HashMap<String, List<Deuda>>> update(@RequestBody List<Deuda> d) throws Exception {
         try {
-            service.registrar(deudas);
+            List<Deuda> deudas = service.registrar(d);
             HashMap<String, List<Deuda>> resp = new HashMap<>();
             resp.put("deudas", deudas);
             return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
-        }catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return new ResponseEntity<HashMap<String, List<Deuda>>>(HttpStatus.NO_CONTENT);
         }
     }
@@ -149,7 +160,7 @@ public class DeudaController {
             service.generarDeudaAnnio();
 
             return new ResponseEntity<String>(HttpStatus.OK);
-        }catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
         }
     }

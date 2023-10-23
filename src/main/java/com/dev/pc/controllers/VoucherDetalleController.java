@@ -93,4 +93,12 @@ public class VoucherDetalleController {
             return new ResponseEntity<VoucherDetalle>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/voucher-detalles/cliente/{idcliente}")
+    public ResponseEntity<HashMap<String, List<VoucherDetalle>>> listByClientId( @PathVariable(value = "idcliente") Long idcliente ) throws Exception {
+        List<VoucherDetalle> voucherdetalles = this.service.listarPorCliente(idcliente);
+        HashMap<String, List<VoucherDetalle>> resp = new HashMap<>();
+        resp.put("voucherdetalles", voucherdetalles);
+        return new ResponseEntity<HashMap<String, List<VoucherDetalle>>>(resp, HttpStatus.OK);
+    }
 }

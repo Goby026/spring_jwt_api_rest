@@ -36,7 +36,7 @@ public class Tributodetalle implements Serializable {
     @Column(name = "monto", nullable = false)
     private Double monto;
 
-    @Column(name = "usua_crea", nullable = false, length = 20)
+    @Column(name = "usua_crea", nullable = false)
     private String usuaCrea;
 
     @Column(name = "fecha", nullable = false)

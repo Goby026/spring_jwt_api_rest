@@ -34,6 +34,7 @@ public class Deuda implements Serializable {
 
     private String codigo;
 
+//    TIPO DE DEUDA
     @ManyToOne()
     @JoinColumn(name = "iddeudadescripcion")
     private DeudaDescripcion deudaDescripcion;
@@ -49,8 +50,12 @@ public class Deuda implements Serializable {
     private Date periodo;
     private double total;
     private double saldo;
+    private double dcto;
     private Date vencimiento;
     private int estado;
+
+    @Column(columnDefinition = "TEXT")
+    private String observacion;
 
     private static final long serialVersionUID = 1L;
 

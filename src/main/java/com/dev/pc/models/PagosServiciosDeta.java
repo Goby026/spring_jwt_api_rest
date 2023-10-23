@@ -39,6 +39,9 @@ public class PagosServiciosDeta implements Serializable {
     @Column(name = "monto", nullable = false)
     private Double monto;
 
+    @Column(name = "idtbdeudas", nullable = true)
+    private Integer iddeuda;
+
     @ManyToOne()
     @JoinColumn(name = "idclientes")
     private Cliente cliente;

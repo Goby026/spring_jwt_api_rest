@@ -5,6 +5,9 @@ import com.dev.pc.repository.PagosServicioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,5 +46,14 @@ public class PagosServicioService implements DAOService<PagosServicio>{
 
     public List<PagosServicio> listarPorCaja(Long idcaja) throws Exception {
         return repository.findByCajaIdcaja(idcaja);
+    }
+
+    public List<PagosServicio> listarPorTributo( Long idTributo, Date desde, Date hasta ){
+        return repository.findByTipoPagoServiciosIdtipopagosservicioAndCreatedAtBetween(idTributo, desde, hasta);
+    }
+
+    public List<PagosServicio> listarPorYearMonth( String ym ) throws ParseException {
+//        Date date1 = new SimpleDateFormat("yyyy-MM").parse(ym);
+        return repository.findByMatchMonthAndMatchDay(ym);
     }
 }

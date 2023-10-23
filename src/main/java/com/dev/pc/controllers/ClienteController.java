@@ -141,4 +141,14 @@ public class ClienteController {
         resp.put("clientes", clientes);
         return new ResponseEntity<HashMap<String, List<Cliente>>>(resp, HttpStatus.OK);
     }
+
+    @GetMapping("/clientes/dni/{dni}")
+    public ResponseEntity<Cliente> buscarPorDni(@PathVariable(value = "dni") String dni) throws Exception {
+        try {
+            Cliente cliente = this.service.buscarPorDni(dni);
+            return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+        }catch (NoSuchElementException e){
+            return new ResponseEntity<Cliente>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

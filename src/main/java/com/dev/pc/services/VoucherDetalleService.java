@@ -40,4 +40,8 @@ public class VoucherDetalleService implements DAOService<VoucherDetalle> {
     public List<VoucherDetalle> listar(Long idvoucher) throws Exception {
         return repository.findByVoucherIdvoucher(idvoucher);
     }
+
+    public List<VoucherDetalle> listarPorCliente(Long idCliente) throws Exception {
+        return repository.findByVoucherClienteIdclientes(idCliente);
+    }
 }

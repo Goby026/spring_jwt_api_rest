@@ -1,6 +1,5 @@
 package com.dev.pc.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,29 +12,24 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "tbdeudadescripcion")
+@Table(name = "tbyears")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @DynamicInsert
 @DynamicUpdate
-public class DeudaDescripcion implements Serializable {
-
+public class Year implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long iddeudadescripcion;
+    @Column(name = "idyear")
+    private Long idyear;
 
-    private String descripcion;
+    private Integer valor;
 
-    private int estado;
-
-    @JsonIgnore
-    @OneToMany( mappedBy = "deudaDescripcion")
-    private List<Deuda> deudas;
+    private Integer estado;
 
     private static final long serialVersionUID = 1L;
 

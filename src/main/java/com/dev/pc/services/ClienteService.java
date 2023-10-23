@@ -48,6 +48,10 @@ public class ClienteService implements DAOService<Cliente> {
         return repository.findByDniContaining(dni);
     }
 
+    public Cliente buscarPorDni(String dni) throws Exception {
+        return repository.findByDni(dni);
+    }
+
     public List<Cliente> buscarClientePorApellido(String ape) throws Exception {
         return repository.findByApepaternoContaining(ape);
     }

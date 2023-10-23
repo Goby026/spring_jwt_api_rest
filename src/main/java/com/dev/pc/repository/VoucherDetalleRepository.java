@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface VoucherDetalleRepository extends JpaRepository<VoucherDetalle, Long> {
     List<VoucherDetalle> findByVoucherIdvoucher(Long idvoucher);
+
+    List<VoucherDetalle> findByVoucherClienteIdclientes(Long idCliente);
 }

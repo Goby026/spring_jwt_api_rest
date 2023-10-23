@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
 
-    public List<Voucher> findByClienteNombresContaining(String nombres);
+    List<Voucher> findByClienteNombresContaining(String nombres);
+
 }

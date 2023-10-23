@@ -79,6 +79,10 @@ public class PagosServicio implements Serializable {
     private PagoServicioEstado pagoServicioEstado;
 
     @ManyToOne()
+    @JoinColumn(name = "idtbdeudas", nullable = true)
+    private Deuda deuda;
+
+    @ManyToOne()
     @JoinColumn(name = "idtipopagosservicio")
     private TipoPagoServicios tipoPagoServicios;
 
