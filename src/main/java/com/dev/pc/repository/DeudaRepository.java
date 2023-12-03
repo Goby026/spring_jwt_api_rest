@@ -13,4 +13,5 @@ public interface DeudaRepository extends JpaRepository<Deuda, Long> {
     List<Deuda> findByClienteZonaIdtbzonasAndPeriodoBetween(Long idzona, Date inicio, Date fin);
     List<Deuda> findByClienteIdclientesAndPeriodoBetween(Long idCliente, Date inicio, Date fin);
     List<Deuda> findByClienteZonaIdtbzonas(Long idzona);
+    List<Deuda> findByPeriodoBetween(Date inicio, Date fin);
 }

@@ -1,5 +1,6 @@
 package com.dev.pc.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +48,9 @@ public class Deuda implements Serializable {
     @OneToMany(mappedBy = "deuda", fetch = FetchType.LAZY)
     private List<Condonacion> condonaciones;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date periodo;
+
     private double total;
     private double saldo;
     private double dcto;

@@ -60,6 +60,20 @@ public class DeudaController {
         return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
     }
 
+    /* =========BUSCAR DEUDAS POR PERIODO========= */
+    @GetMapping("/deudas/buscar-periodo/{desde}/{hasta}")
+    public ResponseEntity<HashMap<String, List<Deuda>>> listarPorRangoFechas(@PathVariable(value = "desde") String desde,
+                                                                           @PathVariable(value = "hasta") String hasta) throws Exception {
+
+        Date dateInicio = new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+        Date dateFin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+
+        List<Deuda> deudas = this.service.listarPorPeriodos(dateInicio, dateFin);
+        HashMap<String, List<Deuda>> resp = new HashMap<>();
+        resp.put("deudas", deudas);
+        return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
+    }
+
     /* =========BUSCAR DEUDAS DE CLIENTE POR RANGO DE FECHAS========= */
     @GetMapping("/deudas/buscar-cliente/{idcliente}/{desde}/{hasta}")
     public ResponseEntity<HashMap<String, List<Deuda>>> listarPorClienteAnnio(@PathVariable(value = "idcliente") Long idcliente,
@@ -99,10 +113,26 @@ public class DeudaController {
     @PostMapping("/deudas")
     public ResponseEntity<Deuda> add(@RequestBody Deuda d) throws Exception {
         try {
+            SimpleDateFormat standar = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStr = standar.format(d.getPeriodo());
+            Date calDate = standar.parse(dateStr);
+            d.setPeriodo(calDate);
             Deuda deuda = service.registrar(d);
-            return new ResponseEntity<Deuda>(deuda, HttpStatus.CREATED);
+            return new ResponseEntity<Deuda>(d, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Deuda>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/deudas-all")
+    public ResponseEntity<HashMap<String, List<Deuda>>> saveAll(@RequestBody List<Deuda> d) throws Exception {
+        try {
+            List<Deuda> deudas = service.registrarTodo(d);
+            HashMap<String, List<Deuda>> resp = new HashMap<>();
+            resp.put("deudas", deudas);
+            return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<HashMap<String, List<Deuda>>>(HttpStatus.NO_CONTENT);
         }
     }
 

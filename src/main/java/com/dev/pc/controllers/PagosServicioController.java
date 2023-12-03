@@ -205,4 +205,17 @@ public ResponseEntity<HashMap<String, List<PagosServicio>>> listByReqAndDates(@P
         resp.put("pagosservicios", pagosservicios);
         return new ResponseEntity<HashMap<String, List<PagosServicio>>>(resp, HttpStatus.OK);
     }
+
+    //  LISTAR POR TRIBUTO
+    @GetMapping("/pagos-servicio/dates/{desde}/{hasta}")
+    public ResponseEntity<HashMap<String, List<PagosServicio>>> listBetweenDates(@PathVariable(value = "desde") String desde,
+                                                                                  @PathVariable(value = "hasta") String hasta) throws Exception {
+        Date inicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+        Date fin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+
+        List<PagosServicio> pagos = this.service.listarEntreDosFechas(inicio, fin);
+        HashMap<String, List<PagosServicio>> resp = new HashMap<>();
+        resp.put("pagos", pagos);
+        return new ResponseEntity<HashMap<String, List<PagosServicio>>>(resp, HttpStatus.OK);
+    }
 }

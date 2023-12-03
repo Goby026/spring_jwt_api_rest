@@ -21,5 +21,9 @@ public interface PagosServicioRepository extends JpaRepository<PagosServicio, Lo
     @Query(value = "SELECT * FROM jassunas.tbpagosservicios t WHERE t.fecha Like %?1%", nativeQuery = true)
     List<PagosServicio> findByMatchMonthAndMatchDay(String param);
 
+    List<PagosServicio> findAllByCreatedAtBetween(
+            Date publicationTimeStart,
+            Date publicationTimeEnd);
+
     long count();
 }

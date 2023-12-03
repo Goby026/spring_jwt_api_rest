@@ -48,10 +48,6 @@ public class TributoDetalleController {
         Date inicio =  new SimpleDateFormat("yyyy-MM-dd").parse(desde);
         Date fin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
 
-        logger.info("CodRequi---->" + codrequi);
-        logger.info("desde---->" + desde);
-        logger.info("hasta---->" + hasta);
-
         List<Tributodetalle> detalles = this.service.listarPorRequisitoDates(codrequi, inicio, fin);
         HashMap<String, List<Tributodetalle>> resp = new HashMap<>();
         resp.put("detalles", detalles);

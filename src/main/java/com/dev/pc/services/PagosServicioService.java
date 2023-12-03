@@ -56,4 +56,10 @@ public class PagosServicioService implements DAOService<PagosServicio>{
 //        Date date1 = new SimpleDateFormat("yyyy-MM").parse(ym);
         return repository.findByMatchMonthAndMatchDay(ym);
     }
+
+    public List<PagosServicio> listarEntreDosFechas( Date desde, Date hasta ) throws ParseException {
+//        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(desde);
+//        Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
+        return repository.findAllByCreatedAtBetween(desde, hasta);
+    }
 }

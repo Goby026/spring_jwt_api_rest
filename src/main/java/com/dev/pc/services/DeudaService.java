@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +34,23 @@ public class DeudaService implements DAOService<Deuda> {
     @Override
     public Deuda registrar(Deuda p) throws Exception {
         return repository.save(p);
+    }
+
+    public List<Deuda> registrarTodo(List<Deuda> deudas) throws Exception {
+        List<Deuda> newDeudas = new ArrayList<>();
+
+        SimpleDateFormat standar = new SimpleDateFormat("yyyy-MM-dd");
+
+
+        for (Deuda deuda: deudas) {
+            String dateStr = standar.format(deuda.getPeriodo());
+            Date calDate = standar.parse(dateStr);
+            deuda.setPeriodo(calDate);
+
+            newDeudas.add(deuda);
+        }
+
+        return repository.saveAll(newDeudas);
     }
 
 //    actualizar estado de deudas pagadas
@@ -100,5 +119,9 @@ public class DeudaService implements DAOService<Deuda> {
 //            }
             logger.info(cli.toString());
         }
+    }
+
+    public List<Deuda> listarPorPeriodos(Date inicio, Date fin) throws Exception {
+        return repository.findByPeriodoBetween(inicio, fin);
     }
 }
