@@ -1,8 +1,8 @@
 package com.dev.pc.controllers;
 
-import com.dev.pc.models.Deuda;
-import com.dev.pc.models.DeudaEstado;
-import com.dev.pc.services.DeudaService;
+import com.dev.pc.models.*;
+import com.dev.pc.services.*;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -25,8 +24,21 @@ public class DeudaController {
 
     private static final Logger logger = LoggerFactory.getLogger(DeudaController.class);
 
-    @Autowired
     private DeudaService service;
+    private DeudaDescripcionService deudaDescripcionService;
+    private DeudaEstadoService deudaEstadoService;
+    private PagosServicioService pagosServicioService;
+    private ClienteService clienteService;
+    private CostootroservicioService costootroservicioService;
+
+    public DeudaController(DeudaService service, DeudaDescripcionService deudaDescripcionService, DeudaEstadoService deudaEstadoService, PagosServicioService pagosServicioService, ClienteService clienteService, TarifarioService tarifarioService, CostootroservicioService costootroservicioService) {
+        this.service = service;
+        this.deudaDescripcionService = deudaDescripcionService;
+        this.deudaEstadoService = deudaEstadoService;
+        this.pagosServicioService = pagosServicioService;
+        this.clienteService = clienteService;
+        this.costootroservicioService = costootroservicioService;
+    }
 
     @GetMapping("/deudas")
     public ResponseEntity<HashMap<String, List<Deuda>>> list() throws Exception {
@@ -183,15 +195,60 @@ public class DeudaController {
         }
     }
 
-    @PostMapping("/generar-deudas")
-    public ResponseEntity<?> addDeudas() throws Exception {
+    @GetMapping("/generar-deudas")
+    public ResponseEntity<HashMap<String,List<Deuda>>> addDeudas() throws Exception {
         try {
 
-            service.generarDeudaAnnio();
+            List<Cliente> clientes = clienteService.listar();
+            String fecha = DateTimeFormatter.ofPattern("yyyy-MM").format(LocalDate.now());
+            List<PagosServicio> pagosServicios =  pagosServicioService.listarPorYearMonth(fecha);
 
-            return new ResponseEntity<String>(HttpStatus.OK);
+//            separamos el id de los pagos realizados en una nueva lista
+            Set<Long> idClientesA = new HashSet<>();
+
+            for (PagosServicio pago: pagosServicios){
+                if (pago.getTipoPagoServicios().getIdtipopagosservicio() == 3 && pago.getPagoServicioEstado().getIdpagoestado()==1){
+                    idClientesA.add(pago.getCliente().getIdclientes());
+                }
+            }
+
+            List<Cliente> clientesFiltrados = clientes.stream()
+                    .filter( clienteB -> !idClientesA.contains(clienteB.getIdclientes()))
+                    .collect(Collectors.toList());
+
+            List<Deuda> deudas = new ArrayList<>();
+            DeudaDescripcion deudaDescripcion = deudaDescripcionService.obtener(1L);
+            DeudaEstado deudaEstado = deudaEstadoService.obtener(3L);
+
+            for (Cliente cli : clientesFiltrados){
+
+                Deuda deuda = new Deuda();
+
+                deuda.setCliente(cli);
+                deuda.setCodigo("1");
+                deuda.setDeudaDescripcion(deudaDescripcion);
+                deuda.setDeudaEstado(deudaEstado);
+                deuda.setPeriodo(new Date());
+                if (this.costootroservicioService.obtener(cli.getIdclientes())!=null){
+                    deuda.setSaldo(this.costootroservicioService.obtener(cli.getIdclientes()).getTarifario().getMonto());
+                }else{
+                    deuda.setSaldo(0);
+                }
+                deuda.setTotal(deuda.getSaldo());
+                deuda.setDcto(0);
+                deuda.setVencimiento(new Date());
+                deuda.setEstado(1);
+                deuda.setObservacion("Generado automáticamente por corte");
+
+                deudas.add(deuda);
+            }
+
+            HashMap<String, List<Deuda>> resp = new HashMap<>();
+            resp.put("deudas", deudas);
+
+            return new ResponseEntity<HashMap<String,List<Deuda>>>(resp, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<HashMap<String,List<Deuda>>>(HttpStatus.NO_CONTENT);
         }
     }
 

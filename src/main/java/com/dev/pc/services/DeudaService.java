@@ -90,16 +90,19 @@ public class DeudaService implements DAOService<Deuda> {
     }
 
     public void generarDeudaAnnio() throws Exception {
+        //1:indicar numero de mes de corte
+        //2:obtener todos los pagos del mes de corte
+        //3:generar deuda para todos los que no aparecen en el paso 2
         Meses[] meses = Meses.values(); //enum de meses
         List<Cliente> clientes = clienteRepository.findAll();
-        DeudaDescripcion deudaDescripcion = deudaDescripcionRepository.findById(1L).get();
+        //DeudaDescripcion deudaDescripcion = deudaDescripcionRepository.findById(1L).get();
 
-
-
-        for (Cliente cli: clientes) { //850
+        for (Meses mes: meses) { //12
+//                repository.save(deuda);
+            for (Cliente cli: clientes) { //850
 //            Deuda deuda = Deuda.builder()
 //                    .cliente(cli)
-//                    .codigo("GEN-"+annio)
+//                    .codigo("GEN-"+"2014")
 //                    .deudaDescripcion(deudaDescripcion)
 //                    .deudaEstado(null)
 //                    .periodo(null)
@@ -107,18 +110,17 @@ public class DeudaService implements DAOService<Deuda> {
 //                    .build();
 //            Deuda deuda = new Deuda();
 //            deuda.setCliente(cli);
-//            deuda.setCodigo("GEN-"+2023);
+//            deuda.setCodigo("GEN-"+2024);
 //            deuda.setDeudaDescripcion(deudaDescripcion);
 //            deuda.setEstado(1);
 //            deuda.setPeriodo(new Date());
 //            deuda.setTotal(10L);
-//
-//            for (Meses mes: meses) { //12
-////                repository.save(deuda);
-//                logger.info(deuda.toString());
-//            }
-            logger.info(cli.toString());
+
+                logger.info(cli.getNombres());
+            }
         }
+
+
     }
 
     public List<Deuda> listarPorPeriodos(Date inicio, Date fin) throws Exception {

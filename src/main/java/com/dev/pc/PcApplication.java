@@ -18,11 +18,14 @@ public class PcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		String password = "123456";
+//		String password = "Jassecretaria@2024";
 //
+//		String passwordBcrypt = passwordEncoder.encode(password);
+//		System.out.println("PASSWORD fiscal----> " + passwordBcrypt);
+
 //		for (int i = 0; i < 4; i++){
 //			String passwordBcrypt = passwordEncoder.encode(password);
-//			System.out.println(passwordBcrypt);
+//			System.out.println("PASSWORD tesorero----> " + passwordBcrypt);
 //		}
 
 	}
