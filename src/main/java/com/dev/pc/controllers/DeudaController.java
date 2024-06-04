@@ -206,19 +206,28 @@ public class DeudaController {
 //            separamos el id de los pagos realizados en una nueva lista
             Set<Long> idClientesA = new HashSet<>();
 
-            for (PagosServicio pago: pagosServicios){
-                if (pago.getTipoPagoServicios().getIdtipopagosservicio() == 3 && pago.getPagoServicioEstado().getIdpagoestado()==1){
-                    idClientesA.add(pago.getCliente().getIdclientes());
-                }
-            }
-
-            List<Cliente> clientesFiltrados = clientes.stream()
-                    .filter( clienteB -> !idClientesA.contains(clienteB.getIdclientes()))
-                    .collect(Collectors.toList());
-
+            HashMap<String, List<Deuda>> resp = new HashMap<>();
             List<Deuda> deudas = new ArrayList<>();
+
             DeudaDescripcion deudaDescripcion = deudaDescripcionService.obtener(1L);
             DeudaEstado deudaEstado = deudaEstadoService.obtener(3L);
+
+            if (!pagosServicios.isEmpty()){
+
+                for (PagosServicio pago: pagosServicios){
+                    if (pago.getTipoPagoServicios().getIdtipopagosservicio() == 3 && pago.getPagoServicioEstado().getIdpagoestado()==1){
+                        idClientesA.add(pago.getCliente().getIdclientes());
+                    }
+                }
+
+                List<Cliente> clientesFiltrados = clientes.stream()
+                        .filter( clienteB -> !idClientesA.contains(clienteB.getIdclientes()))
+                        .collect(Collectors.toList());
+
+
+                logger.info("PAGOS------->" + pagosServicios);
+
+                logger.info("CLIENTES FILTRADOS-----> " + clientesFiltrados);
 
             for (Cliente cli : clientesFiltrados){
 
@@ -242,9 +251,33 @@ public class DeudaController {
 
                 deudas.add(deuda);
             }
+                resp.put("deudas", deudas);
+            }else {
 
-            HashMap<String, List<Deuda>> resp = new HashMap<>();
-            resp.put("deudas", deudas);
+            for (Cliente cli : clientes){
+
+                Deuda deuda = new Deuda();
+
+                deuda.setCliente(cli);
+                deuda.setCodigo("1");
+                deuda.setDeudaDescripcion(deudaDescripcion);
+                deuda.setDeudaEstado(deudaEstado);
+                deuda.setPeriodo(new Date());
+                if (this.costootroservicioService.obtener(cli.getIdclientes())!=null){
+                    deuda.setSaldo(this.costootroservicioService.obtener(cli.getIdclientes()).getTarifario().getMonto());
+                }else{
+                    deuda.setSaldo(0);
+                }
+                deuda.setTotal(deuda.getSaldo());
+                deuda.setDcto(0);
+                deuda.setVencimiento(new Date());
+                deuda.setEstado(1);
+                deuda.setObservacion("Generado automáticamente por corte");
+
+                deudas.add(deuda);
+            }
+                resp.put("deudas", deudas);
+            }
 
             return new ResponseEntity<HashMap<String,List<Deuda>>>(resp, HttpStatus.OK);
         } catch (NoSuchElementException e) {
