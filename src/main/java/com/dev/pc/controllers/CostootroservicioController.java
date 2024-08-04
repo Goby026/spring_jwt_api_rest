@@ -30,11 +30,12 @@ public class CostootroservicioController {
     private CostoService costoService;
 
     @GetMapping("/costo-otros")
-    public ResponseEntity<HashMap<String, List<Costootroservicio>>> list() throws Exception {
-        List<Costootroservicio> costootros = this.service.listar();
-        HashMap<String, List<Costootroservicio>> resp = new HashMap<>();
+    public ResponseEntity<HashMap<String, List<Object>>> list() throws Exception {
+//        List<Costootroservicio> costootros = this.service.listar();
+        List<Object> costootros = List.of(this.service.listar().stream().filter(s -> (s.getCosto().getCliente() != null)).toArray());
+        HashMap<String, List<Object>> resp = new HashMap<>();
         resp.put("costootros", costootros);
-        return new ResponseEntity<HashMap<String, List<Costootroservicio>>>(resp, HttpStatus.OK);
+        return new ResponseEntity<HashMap<String, List<Object>>>(resp, HttpStatus.OK);
     }
 
     //    buscar por id de costo

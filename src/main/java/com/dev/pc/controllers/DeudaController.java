@@ -24,12 +24,12 @@ public class DeudaController {
 
     private static final Logger logger = LoggerFactory.getLogger(DeudaController.class);
 
-    private DeudaService service;
-    private DeudaDescripcionService deudaDescripcionService;
-    private DeudaEstadoService deudaEstadoService;
-    private PagosServicioService pagosServicioService;
-    private ClienteService clienteService;
-    private CostootroservicioService costootroservicioService;
+    private final DeudaService service;
+    private final DeudaDescripcionService deudaDescripcionService;
+    private final DeudaEstadoService deudaEstadoService;
+    private final PagosServicioService pagosServicioService;
+    private final ClienteService clienteService;
+    private final CostootroservicioService costootroservicioService;
 
     public DeudaController(DeudaService service, DeudaDescripcionService deudaDescripcionService, DeudaEstadoService deudaEstadoService, PagosServicioService pagosServicioService, ClienteService clienteService, TarifarioService tarifarioService, CostootroservicioService costootroservicioService) {
         this.service = service;
@@ -67,6 +67,15 @@ public class DeudaController {
         Date dateFin = new SimpleDateFormat("yyyy-MM-dd").parse(hasta);
 
         List<Deuda> deudas = this.service.listarPorZonaAnnio(idzona, dateInicio, dateFin);
+        HashMap<String, List<Deuda>> resp = new HashMap<>();
+        resp.put("deudas", deudas);
+        return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
+    }
+
+    /* =========BUSCAR DEUDAS DE ZONA POR RANGO DE FECHAS========= */
+    @GetMapping("/deudas/buscar-annio/{year}")
+    public ResponseEntity<HashMap<String, List<Deuda>>> listarPorAnnio(@PathVariable(value = "year") int year) throws Exception {
+        List<Deuda> deudas = this.service.listarPorAnnio(year);
         HashMap<String, List<Deuda>> resp = new HashMap<>();
         resp.put("deudas", deudas);
         return new ResponseEntity<HashMap<String, List<Deuda>>>(resp, HttpStatus.OK);
@@ -196,92 +205,28 @@ public class DeudaController {
     }
 
     @GetMapping("/generar-deudas")
-    public ResponseEntity<HashMap<String,List<Deuda>>> addDeudas() throws Exception {
+    public ResponseEntity<HashMap<String,List<Object>>> addDeudas() throws Exception {
         try {
+//            List<Object> clientes = Arrays.asList(Arrays.stream(clienteService.listar().toArray()).filter( cli -> {
+//                return cli != null;
+//            }));
 
-            List<Cliente> clientes = clienteService.listar();
+            List<Object> clientes = List.of(clienteService.listar().stream().filter(s -> (s.getApepaterno() != null)).toArray());
+
             String fecha = DateTimeFormatter.ofPattern("yyyy-MM").format(LocalDate.now());
-            List<PagosServicio> pagosServicios =  pagosServicioService.listarPorYearMonth(fecha);
+            List<Object> pagosServicios =  Arrays.asList(pagosServicioService.listarPorYearMonth(fecha).toArray());
 
-//            separamos el id de los pagos realizados en una nueva lista
-            Set<Long> idClientesA = new HashSet<>();
+            HashMap<String, List<Object>> resp = new HashMap<>();
 
-            HashMap<String, List<Deuda>> resp = new HashMap<>();
-            List<Deuda> deudas = new ArrayList<>();
+//            for (PagosServicio pago: pagosServicios){
+//                logger.info("Pagos del mes: {} {}", pago.getCliente().getNombres(), pago.getCliente().getApepaterno());
+//            }
 
-            DeudaDescripcion deudaDescripcion = deudaDescripcionService.obtener(1L);
-            DeudaEstado deudaEstado = deudaEstadoService.obtener(3L);
-
-            if (!pagosServicios.isEmpty()){
-
-                for (PagosServicio pago: pagosServicios){
-                    if (pago.getTipoPagoServicios().getIdtipopagosservicio() == 3 && pago.getPagoServicioEstado().getIdpagoestado()==1){
-                        idClientesA.add(pago.getCliente().getIdclientes());
-                    }
-                }
-
-                List<Cliente> clientesFiltrados = clientes.stream()
-                        .filter( clienteB -> !idClientesA.contains(clienteB.getIdclientes()))
-                        .collect(Collectors.toList());
-
-
-                logger.info("PAGOS------->" + pagosServicios);
-
-                logger.info("CLIENTES FILTRADOS-----> " + clientesFiltrados);
-
-            for (Cliente cli : clientesFiltrados){
-
-                Deuda deuda = new Deuda();
-
-                deuda.setCliente(cli);
-                deuda.setCodigo("1");
-                deuda.setDeudaDescripcion(deudaDescripcion);
-                deuda.setDeudaEstado(deudaEstado);
-                deuda.setPeriodo(new Date());
-                if (this.costootroservicioService.obtener(cli.getIdclientes())!=null){
-                    deuda.setSaldo(this.costootroservicioService.obtener(cli.getIdclientes()).getTarifario().getMonto());
-                }else{
-                    deuda.setSaldo(0);
-                }
-                deuda.setTotal(deuda.getSaldo());
-                deuda.setDcto(0);
-                deuda.setVencimiento(new Date());
-                deuda.setEstado(1);
-                deuda.setObservacion("Generado automáticamente por corte");
-
-                deudas.add(deuda);
-            }
-                resp.put("deudas", deudas);
-            }else {
-
-            for (Cliente cli : clientes){
-
-                Deuda deuda = new Deuda();
-
-                deuda.setCliente(cli);
-                deuda.setCodigo("1");
-                deuda.setDeudaDescripcion(deudaDescripcion);
-                deuda.setDeudaEstado(deudaEstado);
-                deuda.setPeriodo(new Date());
-                if (this.costootroservicioService.obtener(cli.getIdclientes())!=null){
-                    deuda.setSaldo(this.costootroservicioService.obtener(cli.getIdclientes()).getTarifario().getMonto());
-                }else{
-                    deuda.setSaldo(0);
-                }
-                deuda.setTotal(deuda.getSaldo());
-                deuda.setDcto(0);
-                deuda.setVencimiento(new Date());
-                deuda.setEstado(1);
-                deuda.setObservacion("Generado automáticamente por corte");
-
-                deudas.add(deuda);
-            }
-                resp.put("deudas", deudas);
-            }
-
-            return new ResponseEntity<HashMap<String,List<Deuda>>>(resp, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<HashMap<String,List<Deuda>>>(HttpStatus.NO_CONTENT);
+            resp.put("pagos", pagosServicios);
+            resp.put("clientes", clientes);
+            return new ResponseEntity<HashMap<String,List<Object>>>(resp, HttpStatus.OK);
+        }catch (NoSuchElementException e) {
+            return new ResponseEntity<HashMap<String,List<Object>>>(HttpStatus.NO_CONTENT);
         }
     }
 

@@ -72,9 +72,12 @@ public class Cliente implements Serializable {
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private List<Deuda> deudas;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "cliente", fetch = FetchType.LAZY)
-    private Costo costo;
+//    @JsonIgnore
+//    @OneToOne(mappedBy = "cliente", fetch = FetchType.LAZY)
+//    private Costo costo;
+
+    @Column(name = "cod_costo", nullable = true)
+    private Double costo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)

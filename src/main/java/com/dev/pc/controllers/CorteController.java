@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/v1")
 public class CorteController {
 
-    CorteService corteService;
+    private final CorteService corteService;
 
     public CorteController(CorteService corteService) {
         this.corteService = corteService;
@@ -44,7 +44,7 @@ public class CorteController {
     public ResponseEntity<Corte> add(@RequestBody Corte d) throws Exception {
         try {
             Corte corte = corteService.registrar(d);
-            return new ResponseEntity<Corte>(corte, HttpStatus.CREATED);
+            return new ResponseEntity<Corte>(d, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Corte>(HttpStatus.BAD_REQUEST);
         }

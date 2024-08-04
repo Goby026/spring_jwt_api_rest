@@ -22,18 +22,20 @@ public class DeudaService implements DAOService<Deuda> {
 
     private final static Logger logger = LoggerFactory.getLogger(DeudaService.class);
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final DeudaRepository repository;
+    private final DeudaDescripcionRepository deudaDescripcionRepository;
 
-    @Autowired
-    private DeudaRepository repository;
+    public DeudaService(ClienteRepository clienteRepository, DeudaRepository repository, DeudaDescripcionRepository deudaDescripcionRepository) {
+        this.clienteRepository = clienteRepository;
+        this.repository = repository;
+        this.deudaDescripcionRepository = deudaDescripcionRepository;
+    }
 
-    @Autowired
-    private DeudaDescripcionRepository deudaDescripcionRepository;
 
     @Override
     public Deuda registrar(Deuda p) throws Exception {
-        return repository.save(p);
+        return this.repository.save(p);
     }
 
     public List<Deuda> registrarTodo(List<Deuda> deudas) throws Exception {
@@ -50,43 +52,47 @@ public class DeudaService implements DAOService<Deuda> {
             newDeudas.add(deuda);
         }
 
-        return repository.saveAll(newDeudas);
+        return this.repository.saveAll(newDeudas);
     }
 
 //    actualizar estado de deudas pagadas
     public List<Deuda> registrar(List<Deuda> deudas) throws Exception {
-        return repository.saveAll(deudas);
+        return this.repository.saveAll(deudas);
     }
 
     @Override
     public void eliminar(Long id) throws Exception {
-        repository.deleteById(id);
+        this.repository.deleteById(id);
     }
 
     @Override
     public Deuda obtener(Long id) throws Exception {
-        return repository.findById(id).get();
+        return this.repository.findById(id).get();
     }
 
     @Override
     public List<Deuda> listar() throws Exception {
-        return repository.findAll();
+        return this.repository.findAll();
     }
 
     public List<Deuda> listar(Long id) throws Exception {
-        return repository.findByClienteIdclientes(id);
+        return this.repository.findByClienteIdclientes(id);
     }
 
     public List<Deuda> listarPorZonaAnnio(Long idzona, Date inicio, Date fin) throws Exception {
-        return repository.findByClienteZonaIdtbzonasAndPeriodoBetween(idzona, inicio, fin);
+        return this.repository.findByClienteZonaIdtbzonasAndPeriodoBetween(idzona, inicio, fin);
+    }
+
+    public List<Deuda> listarPorAnnio(int year) throws Exception {
+        return this.repository.findAllByYear(year);
     }
 
     public List<Deuda> listarPorClienteAnnio(Long idcliente, Date inicio, Date fin) throws Exception {
-        return repository.findByClienteIdclientesAndPeriodoBetween(idcliente, inicio, fin);
+        return this.repository.findByClienteIdclientesAndPeriodoBetween(idcliente, inicio, fin);
     }
 
     public List<Deuda> listarPorZona(Long idzona) throws Exception {
-        return repository.findByClienteZonaIdtbzonas(idzona);
+        return this.repository.findByClienteZonaIdtbzonas(idzona);
     }
 
     public void generarDeudaAnnio() throws Exception {
@@ -94,7 +100,7 @@ public class DeudaService implements DAOService<Deuda> {
         //2:obtener todos los pagos del mes de corte
         //3:generar deuda para todos los que no aparecen en el paso 2
         Meses[] meses = Meses.values(); //enum de meses
-        List<Cliente> clientes = clienteRepository.findAll();
+        List<Cliente> clientes = this.clienteRepository.findAll();
         //DeudaDescripcion deudaDescripcion = deudaDescripcionRepository.findById(1L).get();
 
         for (Meses mes: meses) { //12
@@ -124,6 +130,6 @@ public class DeudaService implements DAOService<Deuda> {
     }
 
     public List<Deuda> listarPorPeriodos(Date inicio, Date fin) throws Exception {
-        return repository.findByPeriodoBetween(inicio, fin);
+        return this.repository.findByPeriodoBetween(inicio, fin);
     }
 }
